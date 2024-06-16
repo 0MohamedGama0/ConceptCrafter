@@ -1,0 +1,43 @@
+import pandas as pd
+
+# Load the Excel file
+df = pd.read_excel('Idea_dataset.xlsx')
+
+# Convert the DataFrame to a dictionary for easier access
+ideas_dict = {}
+for _, row in df.iterrows():
+    key = (row['Idea1'], row['Idea2'])
+    ideas_dict[key] = {
+        'MergedIdea': row['MergedIdea'],'RelatedSuggestions': row['RelatedSuggestions'].split(', ') }
+
+def get_merged_idea(idea1, idea2):
+    key = (idea1, idea2)
+    if key in ideas_dict:
+        return ideas_dict[key]['MergedIdea']
+    return "No merged idea found"
+
+def get_related_suggestions(merged_idea):
+    for value in ideas_dict.values():
+        if value['MergedIdea'] == merged_idea:
+            return value['RelatedSuggestions']
+    return ["No related suggestions found"]
+
+def main():
+    print("Welcome to the Idea Suggestion App!")
+
+    idea1 = input("Enter first idea: ").lower()
+    idea2 = input("Enter second idea: ").lower()
+
+    merged_idea = get_merged_idea(idea1, idea2)
+
+    if merged_idea == "No merged idea found":
+        print(f"No merged idea found for {idea1} and {idea2}")
+    else:
+        print(f"Merged Idea: {merged_idea}")
+        suggestions = get_related_suggestions(merged_idea)
+        print("Related Suggestions:")
+        for suggestion in suggestions:
+            print(f"- {suggestion}")
+
+if __name__ == '__main__':
+    main()
